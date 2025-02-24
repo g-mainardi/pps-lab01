@@ -18,6 +18,7 @@ class SimpleBankAccountTest {
     private static final int FIRST_WITHDRAW_AMOUNT = 70;
     private static final int WRONG_USER_ID = 2;
     private static final int NEGATIVE_AMOUNT = -100;
+    private int expectedBalance;
     private AccountHolder accountHolder;
     private BankAccount bankAccount;
 
@@ -25,6 +26,7 @@ class SimpleBankAccountTest {
     void beforeEach(){
         accountHolder = new AccountHolder("Mario", "Rossi", 1);
         bankAccount = new SimpleBankAccount(accountHolder, INITIAL_BALANCE);
+        expectedBalance = INITIAL_BALANCE;
     }
 
     @Test
@@ -43,7 +45,8 @@ class SimpleBankAccountTest {
     @Test
     void testDeposit() {
         bankAccount.deposit(accountHolder.getId(), FIRST_DEPOSIT_AMOUNT);
-        assertEquals(FIRST_DEPOSIT_AMOUNT, bankAccount.getBalance());
+        expectedBalance += FIRST_DEPOSIT_AMOUNT;
+        assertEquals(expectedBalance, bankAccount.getBalance());
     }
 
     @Test
@@ -57,16 +60,16 @@ class SimpleBankAccountTest {
     @Test
     void testWrongDeposit() {
         bankAccount.deposit(accountHolder.getId(), FIRST_DEPOSIT_AMOUNT);
+        expectedBalance += FIRST_DEPOSIT_AMOUNT;
         try {
             bankAccount.deposit(WRONG_USER_ID, SECOND_DEPOSIT_AMOUNT);
         } catch (IllegalArgumentException e) {
-            assertEquals(FIRST_DEPOSIT_AMOUNT, bankAccount.getBalance());
+            assertEquals(expectedBalance, bankAccount.getBalance());
         }
     }
 
     @Test
     void testWithdraw() {
-        int expectedBalance = INITIAL_BALANCE;
         bankAccount.deposit(accountHolder.getId(), FIRST_DEPOSIT_AMOUNT);
         expectedBalance += FIRST_DEPOSIT_AMOUNT;
         bankAccount.withdraw(accountHolder.getId(), FIRST_WITHDRAW_AMOUNT);
@@ -78,10 +81,11 @@ class SimpleBankAccountTest {
     @Test
     void testWrongWithdraw() {
         bankAccount.deposit(accountHolder.getId(), FIRST_DEPOSIT_AMOUNT);
+        expectedBalance += FIRST_DEPOSIT_AMOUNT;
         try {
             bankAccount.withdraw(WRONG_USER_ID, FIRST_WITHDRAW_AMOUNT);
         } catch (IllegalArgumentException e) {
-            assertEquals(FIRST_DEPOSIT_AMOUNT, bankAccount.getBalance());
+            assertEquals(expectedBalance, bankAccount.getBalance());
         }
     }
 
