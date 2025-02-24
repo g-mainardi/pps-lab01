@@ -17,6 +17,7 @@ class SimpleBankAccountTest {
     private static final int SECOND_DEPOSIT_AMOUNT = 50;
     private static final int FIRST_WITHDRAW_AMOUNT = 70;
     private static final int WRONG_USER_ID = 2;
+    private static final int NEGATIVE_AMOUNT = -100;
     private AccountHolder accountHolder;
     private BankAccount bankAccount;
 
@@ -29,6 +30,14 @@ class SimpleBankAccountTest {
     @Test
     void testInitialBalance() {
         assertEquals(INITIAL_BALANCE, bankAccount.getBalance());
+    }
+
+    @Test
+    void testWrongAmount() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> bankAccount.deposit(accountHolder.getId(), NEGATIVE_AMOUNT)
+        );
     }
 
     @Test

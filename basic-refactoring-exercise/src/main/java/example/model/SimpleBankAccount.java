@@ -28,18 +28,21 @@ public class SimpleBankAccount implements BankAccount {
     @Override
     public void deposit(final int userID, final double amount) {
         checkUser(userID);
+        checkAmount(amount);
         this.balance += amount;
     }
 
     @Override
     public void withdraw(final int userID, final double amount) {
         checkUser(userID);
+        checkAmount(amount);
         double amountWithFee = amount + WITHDRAW_FEE;
         isWithdrawAllowed(amountWithFee);
         this.balance -= amountWithFee;
     }
 
     private void isWithdrawAllowed(final double amount){
+        checkAmount(amount);
         if (this.balance < amount) {
             throw new IllegalArgumentException("Amount too high to withdraw (" + amount + ")");
         }
@@ -48,6 +51,12 @@ public class SimpleBankAccount implements BankAccount {
     private void checkUser(final int id) {
         if (this.holder.getId() != id) {
             throw new IllegalArgumentException("Wrong user ID (" + id + ")");
+        }
+    }
+
+    private void checkAmount(final double amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Negative amount not accepted (" + amount +")");
         }
     }
 }
