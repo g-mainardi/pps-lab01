@@ -23,7 +23,7 @@ class SimpleBankAccountTest {
     @BeforeEach
     void beforeEach(){
         accountHolder = new AccountHolder("Mario", "Rossi", 1);
-        bankAccount = new SimpleBankAccount(accountHolder, 0);
+        bankAccount = new SimpleBankAccount(accountHolder, INITIAL_BALANCE);
     }
 
     @Test
@@ -74,5 +74,13 @@ class SimpleBankAccountTest {
         } catch (IllegalArgumentException e) {
             assertEquals(FIRST_DEPOSIT_AMOUNT, bankAccount.getBalance());
         }
+    }
+
+    @Test
+    void testWithdrawTooHigh() {
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> bankAccount.withdraw(accountHolder.getId(), FIRST_WITHDRAW_AMOUNT)
+        );
     }
 }
