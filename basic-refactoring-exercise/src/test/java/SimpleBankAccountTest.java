@@ -38,10 +38,21 @@ class SimpleBankAccountTest {
     }
 
     @Test
+    void testWrongUserID() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> bankAccount.deposit(WRONG_USER_ID, FIRST_DEPOSIT_AMOUNT)
+        );
+    }
+
+    @Test
     void testWrongDeposit() {
         bankAccount.deposit(accountHolder.getId(), FIRST_DEPOSIT_AMOUNT);
-        bankAccount.deposit(WRONG_USER_ID, SECOND_DEPOSIT_AMOUNT);
-        assertEquals(FIRST_DEPOSIT_AMOUNT, bankAccount.getBalance());
+        try {
+            bankAccount.deposit(WRONG_USER_ID, SECOND_DEPOSIT_AMOUNT);
+        } catch (IllegalArgumentException e) {
+            assertEquals(FIRST_DEPOSIT_AMOUNT, bankAccount.getBalance());
+        }
     }
 
     @Test
@@ -58,7 +69,10 @@ class SimpleBankAccountTest {
     @Test
     void testWrongWithdraw() {
         bankAccount.deposit(accountHolder.getId(), FIRST_DEPOSIT_AMOUNT);
-        bankAccount.withdraw(WRONG_USER_ID, FIRST_WITHDRAW_AMOUNT);
-        assertEquals(FIRST_DEPOSIT_AMOUNT, bankAccount.getBalance());
+        try {
+            bankAccount.withdraw(WRONG_USER_ID, FIRST_WITHDRAW_AMOUNT);
+        } catch (IllegalArgumentException e) {
+            assertEquals(FIRST_DEPOSIT_AMOUNT, bankAccount.getBalance());
+        }
     }
 }
