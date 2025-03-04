@@ -5,6 +5,8 @@ import java.util.Optional;
 public class SmartDoorLockImplementation implements SmartDoorLock {
 
     public static final int INITIAL_FAILED_ATTEMPTS = 0;
+    public static final int PIN_DIGIT_NUMBER = 4;
+    public static final int MAX_VALUE = (int) Math.pow(10, PIN_DIGIT_NUMBER);
     private boolean locked;
     private boolean blocked;
     private Optional<Integer> pin;
@@ -21,8 +23,16 @@ public class SmartDoorLockImplementation implements SmartDoorLock {
 
     @Override
     public void setPin(int pin) {
-        if(this.isOpen()){
-            this.pin = Optional.of(pin);
+        if(!this.isOpen()){
+            throw new IllegalStateException("Door not open, cannot set PIN");
+        }
+        this.checkValidPin(pin);
+        this.pin = Optional.of(pin);
+    }
+
+    private void checkValidPin(int pin) {
+        if (pin < 0 || pin >= MAX_VALUE){
+            throw new IllegalArgumentException("Not valid PIN (" + pin + ") provided");
         }
     }
 
@@ -35,6 +45,7 @@ public class SmartDoorLockImplementation implements SmartDoorLock {
         if(this.isBlocked()){
             return;
         }
+        this.checkValidPin(pin);
         if(this.isPinCorrect(pin)){
             this.locked = false;
         } else {
@@ -60,7 +71,7 @@ public class SmartDoorLockImplementation implements SmartDoorLock {
     @Override
     public void lock() {
         if(!this.isPinSet()){
-            throw new IllegalStateException("Pin not set, cannot lock the door.");
+            throw new IllegalStateException("PIN not set, cannot lock the door.");
         }
         this.locked = true;
     }
