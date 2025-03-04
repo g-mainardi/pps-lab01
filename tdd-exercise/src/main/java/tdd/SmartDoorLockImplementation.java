@@ -9,7 +9,7 @@ public class SmartDoorLockImplementation implements SmartDoorLock {
     public static final int MAX_VALUE = (int) Math.pow(10, PIN_DIGIT_NUMBER);
     private boolean locked;
     private boolean blocked;
-    private Optional<Integer> pin;
+    private Optional<String> pin;
     private int failedAttempts;
     private final int maxAttempts;
 
@@ -22,15 +22,15 @@ public class SmartDoorLockImplementation implements SmartDoorLock {
     }
 
     @Override
-    public void setPin(int pin) {
+    public void setPin(final int pin) {
         if(!this.isOpen()){
             throw new IllegalStateException("Door not open, cannot set PIN");
         }
         this.checkValidPin(pin);
-        this.pin = Optional.of(pin);
+        this.pin = Optional.of(getPinString(pin));
     }
 
-    private void checkValidPin(int pin) {
+    private void checkValidPin(final int pin) {
         if (pin < 0 || pin >= MAX_VALUE){
             throw new IllegalArgumentException("Not valid PIN (" + pin + ") provided");
         }
@@ -41,7 +41,7 @@ public class SmartDoorLockImplementation implements SmartDoorLock {
     }
 
     @Override
-    public void unlock(int pin) {
+    public void unlock(final int pin) {
         if(this.isBlocked()){
             return;
         }
@@ -53,8 +53,12 @@ public class SmartDoorLockImplementation implements SmartDoorLock {
         }
     }
 
-    private boolean isPinCorrect(int pin) {
-        return this.isPinSet() && this.pin.get() == pin;
+    private boolean isPinCorrect(final int pin) {
+        return this.isPinSet() && this.pin.get().equals(getPinString(pin));
+    }
+
+    private static String getPinString(final int pin) {
+        return String.format("%0"+PIN_DIGIT_NUMBER+"d", pin);
     }
 
     private void failedAttempt() {

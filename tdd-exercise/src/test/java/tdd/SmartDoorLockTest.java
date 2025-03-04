@@ -8,7 +8,7 @@ import static tdd.SmartDoorLockImplementation.INITIAL_FAILED_ATTEMPTS;
 
 public class SmartDoorLockTest {
 
-    public static final int PIN = 0711;
+    public static final int PIN = 711;
     public static final int WRONG_PIN = 3012;
     public static final int MAX_ATTEMPTS = 3;
     private SmartDoorLock doorLock;
